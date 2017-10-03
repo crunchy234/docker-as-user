@@ -25,6 +25,7 @@ RUN mkdir -p /home/developer && \
     chown ${USERID}:${GROUPID} -R /home/developer
 
 WORKDIR /home/working
-ENTRYPOINT bash -c "usermod -u $USERID developer &&  sudo groupmod -g $GROUPID developer" && \
+ENTRYPOINT usermod -u $USERID developer && \
+    groupmod -g $GROUPID developer && \
     su developer && \
     bash
