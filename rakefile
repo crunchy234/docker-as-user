@@ -7,6 +7,11 @@ task :build do
     sh "docker build -t #{CONTAINER_NAME} ."
 end
 
+desc 'Build the container with no cache'
+task :build_clean do
+    sh "docker build -t #{CONTAINER_NAME} --no-cache ."
+end
+
 desc 'Run the built container'
 task :run do
     sh "docker run -ti --user $(id -u $USER):$(id -g $USER) #{CONTAINER_NAME}"

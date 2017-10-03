@@ -11,20 +11,20 @@ RUN apt-get install -y \
 RUN mkdir /home/working
 
 # Set default UID and GID to create user with
-ENV USERID 1000
-ENV GROUPID 1000
+ENV USERID 1001
+ENV GROUPID 1001
 
-RUN export uid=$USERID gid=$GROUPID && \
-    mkdir -p /home/developer && \
-    echo "developer:x:${uid}:${gid}:Developer,,,:/home/developer:/bin/bash" >> /etc/passwd && \
-    echo "developer:x:${uid}:" >> /etc/group && \
-    chown ${uid}:${gid} -R /home/working && \
+RUN mkdir -p /home/developer && \
+    echo "developer:x:${USERID}:${GROUPID}:Developer,,,:/home/developer:/bin/bash" >> /etc/passwd && \
+    echo "developer:x:${USERID}:" >> /etc/group && \
+    chown ${USERID}:${GROUPID} -R /home/working && \
     cp /root/.bashrc /home/developer && \
     usermod -m -d /home/developer developer && \
-    chown ${uid}:${gid} -R /home/developer
+    echo "developer ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/developer && \
+    chmod 0440 /etc/sudoers.d/developer && \
+    chown ${USERID}:${GROUPID} -R /home/developer
 
 WORKDIR /home/working
-ENTRYPOINT usermod -u $USERID developer && \
-    groupmod -g $GROUPID developer && \
+ENTRYPOINT bash -c "usermod -u $USERID developer &&  sudo groupmod -g $GROUPID developer" && \
     su developer && \
     bash
