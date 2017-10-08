@@ -14,5 +14,10 @@ end
 
 desc 'Run the built container'
 task :run do
-    sh "docker run -ti --user $(id -u $USER):$(id -g $USER) #{CONTAINER_NAME}"
+    sh "docker run --rm -ti -e USERID=$(id -u $USER) -e GROUPID=$(id -g $USER) #{CONTAINER_NAME}"
+end
+
+desc 'Run the built container and mount the current working directory in the container'
+task :run_mount do
+    sh "docker run --rm -tiv $(pwd):/home/working -e USERID=$(id -u $USER) -e GROUPID=$(id -g $USER) #{CONTAINER_NAME}"
 end
